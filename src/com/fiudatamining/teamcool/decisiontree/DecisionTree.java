@@ -10,7 +10,7 @@ public class DecisionTree {
     private Node root;
     private String labelName;
 
-    private int maxLevel = 2;
+    private int maxLevel = 4;
 
     public DecisionTree() {
     }
@@ -22,8 +22,7 @@ public class DecisionTree {
     public String classify(ISampleItem testItem) {
         Node node = root;
         while (!node.isLeaf()) {
-            String currAttr = node.getFeature().getAttrName();
-            List<String> currAttributes = node.getFeature().getAttrValues();
+            // TODO: Go through children until leaf
         }
 
         return node.getLabel();
@@ -126,8 +125,6 @@ public class DecisionTree {
 
         Map<IFeature, Double> gains = new HashMap<>();
         double maxGain = 0;
-        System.out.println("Gains:");
-        // TODO: Do information gain calculations
         for (IFeature feature : features) {
             double newGain = calculateGain(data, feature);
             if (newGain > maxGain) {
@@ -135,13 +132,12 @@ public class DecisionTree {
                 maxGain = newGain;
             }
             gains.put(feature, newGain);
-            System.out.println(feature.getAttrName() + ": " + gains.get(feature));
         }
 
-        candidateFeature = (IFeature)features.stream()
-                .filter(f -> f.getAttrName().equals("age"))
-                .collect(Collectors.toList())
-                .toArray()[0];
+        candidateFeature = gains.entrySet().stream()
+                .max(Map.Entry.comparingByValue())
+                .get()
+                .getKey();
 
         return candidateFeature;
     }
@@ -182,7 +178,7 @@ public class DecisionTree {
         if (!node.getChildren().isEmpty()) {
             List<String> attrValues = node.getFeature().getAttrValues();
             Iterator<String> attrIt = attrValues.iterator();
-            Iterator<Node> childIt = node.getChildren().iterator();
+            Iterator<Node> childIt = node.getChildren().values().iterator();
             while (attrIt.hasNext() && childIt.hasNext()) {
                 String spacer = "\t" + attrIt.next() + "-> ";
                 printTree(childIt.next(), spacer);
