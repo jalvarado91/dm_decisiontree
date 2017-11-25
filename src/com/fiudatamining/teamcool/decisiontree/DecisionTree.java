@@ -1,9 +1,6 @@
 package com.fiudatamining.teamcool.decisiontree;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.counting;
@@ -69,19 +66,77 @@ public class DecisionTree {
                 n.addChild(attributeVal, makeTree(trainingSubset, cleanedFeatures, currLevel + 1));
             }
         }
-        
+
         return n;
+    }
+
+    public static double calculateProbRatio(double yes_count, double no_count, double setSize) {
+        double probability = yes_count / setSize != 0 ? yes_count / setSize : 1;
+        double probability2 = no_count / setSize != 0 ? no_count / setSize : 1;
+        return -(probability * (Math.log(probability) / Math.log(2))) - (probability2 * (Math.log(probability2) / Math.log(2)));
+    }
+
+    public static double calculateGain(List<ISampleItem> D, IFeature feature) {
+        double yes_count = 0, no_count = 0, setSize;
+        Map<String, LinkedHashSet<ISampleItem>> split = new HashMap<>();
+        for (ISampleItem t : D) {
+            if (t.getValue("buys_computer").equals("yes"))
+                yes_count++;
+            else
+                no_count++;
+            String curValue = t.getValue(feature.getAttrName()).toString();
+            if (split.containsKey(curValue)) {
+                split.get(curValue).add(t);
+            } else {
+                LinkedHashSet<ISampleItem> ls = new LinkedHashSet<>();
+                ls.add(t);
+                split.put(curValue, ls);
+            }
+        }
+
+        setSize = D.size(); //Size of data set
+        double infoD = calculateProbRatio(yes_count, no_count, setSize);
+
+
+        double info_attr_D = 0;
+        double sub_yes_count = 0;
+        double sub_no_count = 0;
+        double subList_size = 0;
+        double prob = 0;
+
+        for (HashSet<ISampleItem> hs : split.values()) {
+            sub_yes_count = 0;
+            sub_no_count = 0;
+            for (ISampleItem t : hs) {
+                if (t.getValue("buys_computer").equals("yes"))
+                    sub_yes_count++;
+                else
+                    sub_no_count++;
+            }
+            subList_size = hs.size();
+            prob = subList_size / setSize;
+            info_attr_D += prob * calculateProbRatio(sub_yes_count, sub_no_count, subList_size);
+        }
+        return (infoD - info_attr_D);
     }
 
     protected IFeature getBestSplitAttr(List<ISampleItem> data, List<IFeature> features) {
         double informationGain = 0;
         IFeature candidateFeature = null;
 
+        Map<IFeature, Double> gains = new HashMap<>();
+        double maxGain = 0;
+        System.out.println("Gains:");
         // TODO: Do information gain calculations
-//        for (IFeature feature : features) {
-//            List<List<ISampleItem>> splitData = feature.split(data);
-//
-//        }
+        for (IFeature feature : features) {
+            double newGain = calculateGain(data, feature);
+            if (newGain > maxGain) {
+                candidateFeature = feature;
+                maxGain = newGain;
+            }
+            gains.put(feature, newGain);
+            System.out.println(feature.getAttrName() + ": " + gains.get(feature));
+        }
 
         candidateFeature = (IFeature)features.stream()
                 .filter(f -> f.getAttrName().equals("age"))
@@ -127,7 +182,7 @@ public class DecisionTree {
         if (!node.getChildren().isEmpty()) {
             List<String> attrValues = node.getFeature().getAttrValues();
             Iterator<String> attrIt = attrValues.iterator();
-            Iterator<Node> childIt = node.getChildren().values().iterator();
+            Iterator<Node> childIt = node.getChildren().iterator();
             while (attrIt.hasNext() && childIt.hasNext()) {
                 String spacer = "\t" + attrIt.next() + "-> ";
                 printTree(childIt.next(), spacer);
