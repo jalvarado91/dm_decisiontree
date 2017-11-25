@@ -29,9 +29,14 @@ public class Main {
 
         tree.printTree();
 
-        // ISampleItem pSample
-        // prediction = tree.classify(pSample);
-        // print prediction
+        ISampleItem pSample = SimpleSampleItem.newSimpleSampleItem(
+                "buys_computer",
+                new String[] { "age","income","student","credit_rating" },
+                new String[] { "youth", "low", "yes", "fair" }
+        );
+
+        String prediction = tree.classify(pSample);
+        System.out.println("Prediction: " + prediction);
     }
 
     private static List<IFeature> getFeatures() {
@@ -149,6 +154,11 @@ abstract class BaseFeature implements IFeature {
         }
 
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "(" + getAttrName() + ", " + getAttrValues() +")";
     }
 }
 

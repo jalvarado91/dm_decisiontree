@@ -67,4 +67,9 @@ public class Node {
     public List<ISampleItem> getData() {
         return data;
     }
+
+    @Override
+    public String toString() {
+        return "[Node: " + "label:" + getLabel() + ", " + "feature: " +getFeature() + "]";
+    }
 }

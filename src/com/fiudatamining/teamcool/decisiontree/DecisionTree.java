@@ -10,7 +10,7 @@ public class DecisionTree {
     private Node root;
     private String labelName;
 
-    private int maxLevel = 4;
+    private int maxLevel = 3;
 
     public DecisionTree() {
     }
@@ -23,8 +23,9 @@ public class DecisionTree {
         Node node = root;
         while (!node.isLeaf()) {
             // TODO: Go through children until leaf
+            System.out.println(node.getChildren());
+            node = (Node)node.getChildren().values().toArray()[0];
         }
-
         return node.getLabel();
     }
 
@@ -180,6 +181,7 @@ public class DecisionTree {
             Iterator<String> attrIt = attrValues.iterator();
             Iterator<Node> childIt = node.getChildren().values().iterator();
             while (attrIt.hasNext() && childIt.hasNext()) {
+//                String spacer = "\t" + attrIt.next() + "-> ";
                 String spacer = "\t" + attrIt.next() + "-> ";
                 printTree(childIt.next(), spacer);
             }
@@ -192,7 +194,7 @@ public class DecisionTree {
             System.out.print(node.getLabel());
         }
         else {
-            System.out.print(node.getFeature().getAttrName());
+            System.out.println(node.getFeature().getAttrName());
         }
         System.out.println();
     }
