@@ -6,11 +6,11 @@ public class SimpleSampleItem implements ISampleItem {
 
     private HashMap<String, Object> values = new HashMap<>();
 
-    private String labelColumn;
+    private String labelName;
 
-    private SimpleSampleItem(String labelColumn, String[] columnHeaders, Object... values) {
+    private SimpleSampleItem(String labelName, String[] columnHeaders, Object... values) {
         super();
-        this.labelColumn = labelColumn;
+        this.labelName = labelName;
         for (int i = 0; i < columnHeaders.length; i++) {
             this.values.put(columnHeaders[i], values[i]);
         }
@@ -21,7 +21,20 @@ public class SimpleSampleItem implements ISampleItem {
         return this.values.get(column);
     }
 
+    public String getLabelName() {
+        return labelName;
+    }
+
+    public String getLabel() {
+        return (String)values.get(labelName);
+    }
+
     public static SimpleSampleItem newSimpleSampleItem(String labelColumn, String[] columnHeaders, Object... values) {
         return new SimpleSampleItem(labelColumn, columnHeaders, values);
+    }
+
+    @Override
+    public String toString() {
+        return "[" + this.values.toString() + "]";
     }
 }
