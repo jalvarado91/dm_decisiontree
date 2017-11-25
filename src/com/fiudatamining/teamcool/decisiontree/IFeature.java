@@ -7,7 +7,5 @@ public interface IFeature {
 
     List<String> getAttrValues();
 
-    boolean belongsTo(ISampleItem sampleItem);
-
     List<List<ISampleItem>> split(List<ISampleItem> data);
 }

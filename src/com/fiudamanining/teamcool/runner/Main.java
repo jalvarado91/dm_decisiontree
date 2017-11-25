@@ -135,11 +135,6 @@ abstract class BaseFeature implements IFeature {
     }
 
     @Override
-    public boolean belongsTo(ISampleItem sampleItem) {
-        return true;
-    }
-
-    @Override
     public List<List<ISampleItem>> split(List<ISampleItem> data) {
         List<List<ISampleItem>> result = new ArrayList<>();
 

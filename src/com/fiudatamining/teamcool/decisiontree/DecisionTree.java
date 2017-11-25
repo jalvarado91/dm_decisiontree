@@ -1,5 +1,6 @@
 package com.fiudatamining.teamcool.decisiontree;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,16 @@ public class DecisionTree {
         root = makeTree(trainingTuples, features, 1);
     }
 
+    public String classify(ISampleItem testItem) {
+        Node node = root;
+        while (!node.isLeaf()) {
+            String currAttr = node.getFeature().getAttrName();
+            List<String> currAttributes = node.getFeature().getAttrValues();
+        }
+
+        return node.getLabel();
+    }
+
     protected Node makeTree(List<ISampleItem> trainingTuples, List<IFeature> features, int currLevel) {
         labelName = trainingTuples.get(0).getLabelName();
         String currentNodeLabel = null;
@@ -37,6 +48,7 @@ public class DecisionTree {
         }
 
         IFeature bestSplit = getBestSplitAttr(trainingTuples, features);
+        List<String> splitAttrs = bestSplit.getAttrValues();
         List<List<ISampleItem>> splitData = bestSplit.split(trainingTuples);
 
         List<IFeature> cleanedFeatures = features.stream()
@@ -44,14 +56,20 @@ public class DecisionTree {
                 .collect(Collectors.toList());
 
         Node n = Node.newNode(bestSplit);
-        for (List<ISampleItem> trainingSubset : splitData) {
+        Iterator<String> attrsIt = splitAttrs.iterator();
+        Iterator<List<ISampleItem>> splitDataIt = splitData.iterator();
+
+        while (attrsIt.hasNext() && splitDataIt.hasNext()) {
+            List<ISampleItem> trainingSubset = splitDataIt.next();
+            String attributeVal = attrsIt.next();
             if (trainingSubset.isEmpty()) {
-                n.addChild(Node.newLeafNode(getLabelFromMajorityVoting(trainingTuples)));
+                n.addChild(attributeVal, Node.newLeafNode(getLabelFromMajorityVoting(trainingTuples)));
             }
             else {
-                n.addChild(makeTree(trainingSubset, cleanedFeatures, currLevel + 1));
+                n.addChild(attributeVal, makeTree(trainingSubset, cleanedFeatures, currLevel + 1));
             }
         }
+        
         return n;
     }
 
@@ -109,7 +127,7 @@ public class DecisionTree {
         if (!node.getChildren().isEmpty()) {
             List<String> attrValues = node.getFeature().getAttrValues();
             Iterator<String> attrIt = attrValues.iterator();
-            Iterator<Node> childIt = node.getChildren().iterator();
+            Iterator<Node> childIt = node.getChildren().values().iterator();
             while (attrIt.hasNext() && childIt.hasNext()) {
                 String spacer = "\t" + attrIt.next() + "-> ";
                 printTree(childIt.next(), spacer);

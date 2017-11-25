@@ -1,6 +1,7 @@
 package com.fiudatamining.teamcool.decisiontree;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Node {
@@ -9,7 +10,7 @@ public class Node {
 
     private String label;
 
-    private List<Node> children = new ArrayList<>();
+    private HashMap<String, Node> children = new HashMap<>();
     private List<ISampleItem> data;
 
 
@@ -39,11 +40,11 @@ public class Node {
         return new Node(label, data);
     }
 
-    public void addChild(Node child) {
-        children.add(child);
+    public void addChild(String attr, Node child) {
+        children.put(attr, child);
     }
 
-    public List<Node> getChildren() {
+    public HashMap<String, Node> getChildren() {
         return children;
     }
 
