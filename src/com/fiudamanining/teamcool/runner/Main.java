@@ -32,7 +32,7 @@ public class Main {
         ISampleItem pSample = SimpleSampleItem.newSimpleSampleItem(
                 "buys_computer",
                 new String[] { "age","income","student","credit_rating" },
-                new String[] { "youth", "low", "yes", "fair" }
+                new String[] { "youth", "high", "no", "fair" }
         );
 
         String prediction = tree.classify(pSample);
@@ -43,7 +43,7 @@ public class Main {
         IFeature ageFeature = new AgeFeature("age", Arrays.asList("youth", "middle_aged", "senior"));
         IFeature incomeFeature = new IncomeFeature("income", Arrays.asList("low", "medium", "high"));
         IFeature studentFeature = new StudentFeature("student", Arrays.asList("yes", "no"));
-        IFeature creditFeature = new CreditFeature("credit_rating", Arrays.asList("fair", "excellent", "high"));
+        IFeature creditFeature = new CreditFeature("credit_rating", Arrays.asList("fair", "excellent"));
 
         List<IFeature> features = Arrays.asList(
                 ageFeature,

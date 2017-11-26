@@ -10,7 +10,7 @@ public class DecisionTree {
     private Node root;
     private String labelName;
 
-    private int maxLevel = 3;
+    private int maxLevel = 4;
 
     public DecisionTree() {
     }
@@ -23,7 +23,7 @@ public class DecisionTree {
         Node node = root;
         while (!node.isLeaf()) {
             // TODO: Go through children until leaf
-            System.out.println(node.getChildren());
+//            System.out.println(node.getChildren());
             node = (Node)node.getChildren().values().toArray()[0];
         }
         return node.getLabel();
@@ -171,36 +171,36 @@ public class DecisionTree {
     }
 
     public void printTree() {
-        printSubTree(root);
+        printSubTree(root, 0);
     }
 
-    public void printSubTree(Node node) {
-        printNode(node);
+    public void printSubTree(Node node, int level) {
+        String spacer = "";
+        for (int i = 1; i <= level; i++) spacer += "\t";
+        printNode(node, spacer);
         if (!node.getChildren().isEmpty()) {
-            List<String> attrValues = node.getFeature().getAttrValues();
-            Iterator<String> attrIt = attrValues.iterator();
-            Iterator<Node> childIt = node.getChildren().values().iterator();
-            while (attrIt.hasNext() && childIt.hasNext()) {
-//                String spacer = "\t" + attrIt.next() + "-> ";
-                String spacer = "\t" + attrIt.next() + "-> ";
-                printTree(childIt.next(), spacer);
+            spacer += "\t";
+            Collection<Node> children = node.getChildren().values();
+            Collection<String> attrs = node.getChildren().keySet();
+            Iterator<Node> chIt = children.iterator();
+            Iterator<String> attIt = attrs.iterator();
+            while (chIt.hasNext() && attIt.hasNext()) {
+                System.out.println(spacer + "-> " + attIt.next());
+                System.out.print(spacer + "    ");
+                printSubTree(chIt.next(), level + 1);
             }
         }
     }
 
-    private void printNode(Node node) {
+    private void printNode(Node node, String spacer) {
         if (node.isLeaf()) {
+            System.out.print(spacer);
             System.out.print(labelName + ": ");
             System.out.print(node.getLabel());
         }
         else {
-            System.out.println(node.getFeature().getAttrName());
+            System.out.print(node.getFeature().getAttrName());
         }
         System.out.println();
-    }
-
-    public void printTree(Node node, String spacer) {
-        System.out.print(spacer);
-        printSubTree(node);
     }
 }
