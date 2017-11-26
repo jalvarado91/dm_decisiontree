@@ -32,11 +32,11 @@ public class Main {
         ISampleItem pSample = SimpleSampleItem.newSimpleSampleItem(
                 "buys_computer",
                 new String[] { "age","income","student","credit_rating" },
-                new String[] { "youth", "high", "no", "fair" }
+                new String[] { "senior", "high", "yes", "excellent" }
         );
 
         String prediction = tree.classify(pSample);
-        System.out.println("Prediction: " + prediction);
+        System.out.println("Sample: " + pSample + ", Prediction: " + pSample.getLabelName() + ": " + prediction);
     }
 
     private static List<IFeature> getFeatures() {

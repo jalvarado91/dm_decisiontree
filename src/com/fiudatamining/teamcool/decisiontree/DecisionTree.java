@@ -22,9 +22,18 @@ public class DecisionTree {
     public String classify(ISampleItem testItem) {
         Node node = root;
         while (!node.isLeaf()) {
-            // TODO: Go through children until leaf
-//            System.out.println(node.getChildren());
-            node = (Node)node.getChildren().values().toArray()[0];
+            String relevantAttribute = node.getFeature().getAttrName();
+            Collection<String> edges = node.getChildren().keySet();
+
+            String targetEdge = null;
+            for (String edge : edges) {
+                if (testItem.getValue(relevantAttribute) == edge) {
+                    targetEdge = edge;
+                    break;
+                }
+            }
+
+            node = node.getChildren().get(targetEdge);
         }
         return node.getLabel();
     }
@@ -199,7 +208,7 @@ public class DecisionTree {
             System.out.print(node.getLabel());
         }
         else {
-            System.out.print(node.getFeature().getAttrName());
+            System.out.print(node.getFeature().getAttrName().toUpperCase());
         }
         System.out.println();
     }
