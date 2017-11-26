@@ -17,13 +17,9 @@ import static java.util.stream.Collectors.groupingBy;
 public class Main {
     public static void main(String[] args) {
 
-        // Feature[] features
-        // Tuple[] tuples
         List<IFeature> features = getFeatures();
         List<ISampleItem> data = getData();
 
-        // Tree tree
-        // tree.train(features, tuples)
         DecisionTree tree = new DecisionTree();
         tree.train(data, features);
 
