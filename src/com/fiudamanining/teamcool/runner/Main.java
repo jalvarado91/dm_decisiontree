@@ -5,6 +5,7 @@ import com.fiudatamining.teamcool.decisiontree.IFeature;
 import com.fiudatamining.teamcool.decisiontree.ISampleItem;
 import com.fiudatamining.teamcool.decisiontree.SimpleSampleItem;
 
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -25,14 +26,18 @@ public class Main {
 
         tree.printTree();
 
-        ISampleItem pSample = SimpleSampleItem.newSimpleSampleItem(
-                "buys_computer",
-                new String[] { "age","income","student","credit_rating" },
-                new String[] { "senior", "high", "yes", "excellent" }
-        );
+        String desiredAttribute = "buys_computer";
+        String [] userAttributesValues = new String [4];
+        String [] userAttributes = new String[] { "age","income","student","credit_rating" };
 
-        String prediction = tree.classify(pSample);
-        System.out.println("Sample: " + pSample + ", Prediction: " + pSample.getLabelName() + ": " + prediction);
+        for (int c = 0; c < 4; c++){
+            userAttributesValues[c]  = JOptionPane.showInputDialog("Please enter the provided attribute value for: " + userAttributes[c]);
+        }
+
+        ISampleItem uSample = SimpleSampleItem.newSimpleSampleItem(desiredAttribute,userAttributes,userAttributesValues);
+
+        String prediction = tree.classify(uSample);
+        System.out.println("Sample: " + uSample + ", Prediction: " + uSample.getLabelName() + ": " + prediction);
     }
 
     private static List<IFeature> getFeatures() {

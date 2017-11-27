@@ -27,7 +27,7 @@ public class DecisionTree {
 
             String targetEdge = null;
             for (String edge : edges) {
-                if (testItem.getValue(relevantAttribute) == edge) {
+                if (testItem.getValue(relevantAttribute).equals(edge)) {
                     targetEdge = edge;
                     break;
                 }
